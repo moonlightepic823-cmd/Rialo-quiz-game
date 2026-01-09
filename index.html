@@ -71,7 +71,12 @@ body{
   text-decoration:none;
   font-weight:700;
 }
-.highscore{margin-top:12px;color:#22c55e;font-weight:700}
+.scorebox{
+  margin-top:12px;
+  font-size:16px;
+  font-weight:700;
+}
+.highscore{color:#22c55e}
 </style>
 </head>
 
@@ -82,11 +87,13 @@ body{
   <h1>RIALO <span>BEGINNER QUIZ</span></h1>
 </div>
 
+<!-- START -->
 <section id="start" class="screen active">
   <h2>Welcome 👋</h2>
   <button class="btn" onclick="startQuiz()">Start Quiz</button>
 </section>
 
+<!-- QUIZ -->
 <section id="quiz" class="screen">
   <div>Question <span id="qNo"></span>/<span id="total"></span></div>
   <div class="progress"><span id="bar"></span></div>
@@ -96,12 +103,19 @@ body{
   <button class="btn" onclick="next()">Next</button>
 </section>
 
+<!-- FOLLOW / RESULT -->
 <section id="follow" class="screen follow">
   <h2 id="finalTitle"></h2>
   <p id="finalMsg"></p>
 
-  <div class="highscore">
-    🏆 High Score: <span id="highScore">0</span> / 15
+  <!-- ✅ CURRENT SCORE (ALWAYS SHOWN) -->
+  <div class="scorebox">
+    Your Score: <span id="currentScore"></span> / 15
+  </div>
+
+  <!-- ✅ HIGH SCORE (ALWAYS SHOWN) -->
+  <div class="scorebox highscore">
+    🏆 High Score: <span id="highScore"></span> / 15
   </div>
 
   <a href="https://x.com/epic_moonl702" target="_blank">Follow me on X 🚀</a>
@@ -164,7 +178,8 @@ function select(idx){
   if(j===d.a)o.classList.add("correct");
   if(j===idx&&idx!==d.a)o.classList.add("wrong");
  });
- if(idx===d.a){score++} else {wrong++; if(wrong>=3){finish();}}
+ if(idx===d.a){score++}
+ else{wrong++; if(wrong>=3){finish();}}
 }
 
 function next(){
@@ -176,11 +191,15 @@ function finish(){
  $("quiz").classList.remove("active");
  $("follow").classList.add("active");
 
- if(score>highScore){
-  highScore=score;
-  localStorage.setItem("rialoHighScore",highScore);
+ // ✅ ALWAYS SHOW CURRENT SCORE
+ $("currentScore").textContent = score;
+
+ // ✅ HIGH SCORE LOGIC (NO CONDITION ON PERFECT)
+ if(score > highScore){
+  highScore = score;
+  localStorage.setItem("rialoHighScore", highScore);
  }
- $("highScore").textContent=highScore;
+ $("highScore").textContent = highScore;
 
  if(score===DATA.length){
   $("finalTitle").textContent="Expert Level 🏆";
@@ -190,7 +209,7 @@ function finish(){
   $("finalMsg").textContent="3 wrong answers reached. Keep learning.";
  }else{
   $("finalTitle").textContent="Quiz Finished 🎉";
-  $("finalMsg").textContent="Nice attempt. Try to beat your high score!";
+  $("finalMsg").textContent="Nice attempt. Try to beat your high score.";
  }
 }
 
@@ -203,4 +222,3 @@ function restart(){
 
 </body>
 </html>
-
