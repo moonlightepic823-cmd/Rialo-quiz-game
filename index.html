@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rialo Quiz</title>
+
+<style>
+:root{
+  --primary:#6c63ff;
+  --success:#22c55e;
+  --danger:#ef4444;
+  --bg:#020617;
+  --card:#0f172a;
+  --muted:#94a3b8;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+  font-family:system-ui,Segoe UI,Roboto;
+  background:radial-gradient(circle at top,#1e293b,#020617);
+  color:#e5e7eb;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.app{
+  width:100%;
+  max-width:850px;
+  background:linear-gradient(180deg,#020617,#020617cc);
+  border-radius:20px;
+  overflow:hidden;
+  box-shadow:0 30px 80px rgba(0,0,0,.7);
+}
+
+.header{
+  padding:24px;
+  border-bottom:1px solid #1e293b;
+  text-align:center;
+}
+.header h1{
+  font-size:28px;
+  font-weight:800;
+}
+.header span{color:var(--primary)}
+.sub{color:var(--muted);margin-top:6px}
+
+.screen{display:none;padding:32px}
+.screen.active{display:block}
+
+.btn{
+  padding:14px 34px;
+  border:none;
+  border-radius:999px;
+  background:linear-gradient(135deg,var(--primary),#8b5cf6);
+  color:white;
+  font-size:16px;
+  font-weight:600;
+  cursor:pointer;
+}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+
+.top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.timer{
+  font-weight:700;
+  color:#facc15;
+}
+
+.question{
+  font-size:22px;
+  margin:24px 0;
+}
+
+.options{
+  display:grid;
+  gap:14px;
+}
+
+.option{
+  padding:16px;
+  border-radius:14px;
+  background:#020617;
+  border:1px solid #1e293b;
+  cursor:pointer;
+}
+.option.correct{border-color:var(--success);background:#052e1a}
+.option.wrong{border-color:var(--danger);background:#2a0a0a}
+
+.progress{
+  height:6px;
+  background:#1e293b;
+  border-radius:6px;
+  overflow:hidden;
+  margin:16px 0;
+}
+.progress span{
+  display:block;
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,var(--primary),#8b5cf6);
+}
+
+.feedback{
+  margin-top:18px;
+  font-weight:600;
+}
+
+.result{
+  text-align:center;
+}
+.score{
+  font-size:64px;
+  font-weight:800;
+  margin:20px 0;
+}
+
+.footer{
+  padding:16px;
+  text-align:center;
+  font-size:13px;
+  color:#64748b;
+  border-top:1px solid #1e293b;
+}
+
+.follow{
+  text-align:center;
+}
+.follow a{
+  display:inline-block;
+  margin-top:20px;
+  padding:14px 30px;
+  border-radius:999px;
+  background:#1da1f2;
+  color:white;
+  text-decoration:none;
+  font-weight:700;
+}
+</style>
+</head>
+
+<body>
+<div class="app">
+
+<div class="header">
+  <h1>RIALO <span>QUIZ</span></h1>
+  <div class="sub">Fun • Learning • Community</div>
+</div>
+
+<!-- START -->
+<section id="start" class="screen active">
+  <h2>Ready to play?</h2>
+  <p style="color:#94a3b8;margin:16px 0">
+    You have <b>30 seconds per question</b>.
+  </p>
+  <button class="btn" onclick="startQuiz()">Start Quiz</button>
+</section>
+
+<!-- QUIZ -->
+<section id="quiz" class="screen">
+  <div class="top">
+    <div>Q <span id="qNo"></span>/<span id="total"></span></div>
+    <div class="timer">⏱ <span id="time">30</span>s</div>
+  </div>
+
+  <div class="progress"><span id="bar"></span></div>
+
+  <div class="question" id="question"></div>
+  <div class="options" id="options"></div>
+  <div class="feedback" id="feedback"></div>
+
+  <div style="margin-top:24px">
+    <button id="next" class="btn" onclick="next()" disabled>Next</button>
+  </div>
+</section>
+
+<!-- RESULT -->
+<section id="result" class="screen result">
+  <h2>Quiz Complete 🎉</h2>
+  <div class="score" id="score"></div>
+  <div id="remark" style="color:#94a3b8;margin-bottom:24px"></div>
+  <button class="btn" onclick="restart()">Play Again</button>
+</section>
+
+<!-- FOLLOW PAGE -->
+<section id="follow" class="screen follow">
+  <h2>Perfect Score! 🏆</h2>
+  <p style="color:#94a3b8;margin:16px 0">
+    You answered everything correctly.  
+    Follow me on X for more content like this.
+  </p>
+
+  <!-- ✅ YOUR X ACCOUNT LINK ADDED -->
+  <a href="https://x.com/epic_moonl702" target="_blank">
+    Follow me on X 🚀
+  </a>
+</section>
+
+<div class="footer">
+  Fan-made educational project • Not official
+</div>
+
+</div>
+
+<script>
+const DATA = [
+  {q:"What philosophical framework does Rialo adopt?",o:["Monolithic","Modularity","Supermodularity","Microservices"],a:2},
+  {q:"Supermodularity refers to:",o:["Independent systems","Zero overhead","Emergent integration value","Strict separation"],a:2},
+  {q:"Integration is treated as:",o:["Ideology","Economic decision","Hack","Risk"],a:1},
+  {q:"Which real-world example illustrates supermodularity?",o:["Email & calendars","Photos & texts","GPS + phone + payments","Cloud storage"],a:2},
+  {q:"Which ISA does Rialo use?",o:["x86","ARM","WASM","RISC-V"],a:3},
+  {q:"Why is RISC-V preferred?",o:["Proprietary","Restrictive","Deterministic & performant","Regulator mandate"],a:2}
+];
+
+let i=0,score=0,time=30,timer;
+const $=id=>document.getElementById(id);
+
+function startQuiz(){
+  $("start").classList.remove("active");
+  $("quiz").classList.add("active");
+  $("total").textContent=DATA.length;
+  load();
+}
+
+function startTimer(){
+  clearInterval(timer);
+  time=30;
+  $("time").textContent=time;
+  timer=setInterval(()=>{
+    time--;
+    $("time").textContent=time;
+    if(time===0){
+      clearInterval(timer);
+      lockOptions();
+      $("feedback").textContent="⏱ Time’s up!";
+      $("next").disabled=false;
+    }
+  },1000);
+}
+
+function load(){
+  $("feedback").textContent="";
+  $("next").disabled=true;
+  $("options").innerHTML="";
+  $("bar").style.width=(i/DATA.length)*100+"%";
+
+  const d=DATA[i];
+  $("qNo").textContent=i+1;
+  $("question").textContent=d.q;
+
+  d.o.forEach((text,idx)=>{
+    const div=document.createElement("div");
+    div.className="option";
+    div.textContent=text;
+    div.onclick=()=>select(idx);
+    $("options").appendChild(div);
+  });
+
+  startTimer();
+}
+
+function select(idx){
+  clearInterval(timer);
+  const d=DATA[i];
+  document.querySelectorAll(".option").forEach((o,j)=>{
+    o.onclick=null;
+    if(j===d.a) o.classList.add("correct");
+    if(j===idx && idx!==d.a) o.classList.add("wrong");
+  });
+  if(idx===d.a){score++;$("feedback").textContent="Correct ✅"}
+  else{$("feedback").textContent="Wrong ❌"}
+  $("next").disabled=false;
+}
+
+function lockOptions(){
+  document.querySelectorAll(".option").forEach(o=>o.onclick=null);
+}
+
+function next(){
+  i++;
+  if(i<DATA.length) load();
+  else showResult();
+}
+
+function showResult(){
+  $("quiz").classList.remove("active");
+  const pct=Math.round(score/DATA.length*100);
+  if(pct===100){
+    $("follow").classList.add("active");
+  }else{
+    $("result").classList.add("active");
+    $("score").textContent=pct+"%";
+    $("remark").textContent=pct>=70?"Great job 👍":"Keep learning 💡";
+  }
+}
+
+function restart(){
+  i=0;score=0;
+  $("result").classList.remove("active");
+  $("follow").classList.remove("active");
+  $("start").classList.add("active");
+}
+</script>
+
+</body>
+</html>
