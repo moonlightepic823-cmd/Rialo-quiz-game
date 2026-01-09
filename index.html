@@ -10,13 +10,9 @@
   --primary:#6c63ff;
   --success:#22c55e;
   --danger:#ef4444;
-  --bg:#020617;
-  --card:#0f172a;
   --muted:#94a3b8;
 }
-
 *{margin:0;padding:0;box-sizing:border-box}
-
 body{
   font-family:system-ui,Segoe UI,Roboto;
   background:radial-gradient(circle at top,#1e293b,#020617);
@@ -26,49 +22,33 @@ body{
   align-items:center;
   justify-content:center;
 }
-
 .app{
   width:100%;
   max-width:900px;
-  background:linear-gradient(180deg,#020617,#020617cc);
+  background:#020617;
   border-radius:20px;
-  overflow:hidden;
   box-shadow:0 30px 80px rgba(0,0,0,.7);
+  overflow:hidden;
 }
-
 .header{
   padding:24px;
   border-bottom:1px solid #1e293b;
   text-align:center;
 }
-.header h1{font-size:28px;font-weight:800}
 .header span{color:var(--primary)}
-.sub{color:var(--muted);margin-top:6px}
-
 .screen{display:none;padding:32px}
 .screen.active{display:block}
-
 .btn{
   padding:14px 34px;
   border:none;
   border-radius:999px;
   background:linear-gradient(135deg,var(--primary),#8b5cf6);
   color:white;
-  font-size:16px;
   font-weight:600;
   cursor:pointer;
 }
-
-.question{
-  font-size:22px;
-  margin:24px 0;
-}
-
-.options{
-  display:grid;
-  gap:14px;
-}
-
+.question{font-size:22px;margin:24px 0}
+.options{display:grid;gap:14px}
 .option{
   padding:16px;
   border-radius:14px;
@@ -76,44 +56,22 @@ body{
   border:1px solid #1e293b;
   cursor:pointer;
 }
-.option.correct{border-color:var(--success);background:#052e1a}
-.option.wrong{border-color:var(--danger);background:#2a0a0a}
-
-.progress{
-  height:6px;
-  background:#1e293b;
-  border-radius:6px;
-  overflow:hidden;
-  margin:16px 0;
-}
-.progress span{
-  display:block;
-  height:100%;
-  width:0%;
-  background:linear-gradient(90deg,var(--primary),#8b5cf6);
-}
-
-.feedback{margin-top:18px;font-weight:600}
-
+.option.correct{border-color:var(--success)}
+.option.wrong{border-color:var(--danger)}
+.progress{height:6px;background:#1e293b;border-radius:6px;margin:16px 0}
+.progress span{display:block;height:100%;background:var(--primary);width:0%}
 .follow{text-align:center}
 .follow a{
   display:inline-block;
-  margin-top:20px;
+  margin-top:16px;
   padding:14px 30px;
-  border-radius:999px;
   background:#1da1f2;
   color:white;
+  border-radius:999px;
   text-decoration:none;
   font-weight:700;
 }
-
-.footer{
-  padding:16px;
-  text-align:center;
-  font-size:13px;
-  color:#64748b;
-  border-top:1px solid #1e293b;
-}
+.highscore{margin-top:12px;color:#22c55e;font-weight:700}
 </style>
 </head>
 
@@ -122,155 +80,127 @@ body{
 
 <div class="header">
   <h1>RIALO <span>BEGINNER QUIZ</span></h1>
-  <div class="sub">Easy • Fun • Real-World Blockchain</div>
 </div>
 
-<!-- START -->
 <section id="start" class="screen active">
   <h2>Welcome 👋</h2>
-  <p style="color:#94a3b8;margin:16px 0">
-    Beginner-friendly quiz to understand what Rialo is and why it matters.
-  </p>
   <button class="btn" onclick="startQuiz()">Start Quiz</button>
 </section>
 
-<!-- QUIZ -->
 <section id="quiz" class="screen">
   <div>Question <span id="qNo"></span>/<span id="total"></span></div>
   <div class="progress"><span id="bar"></span></div>
-
   <div class="question" id="question"></div>
   <div class="options" id="options"></div>
-  <div class="feedback" id="feedback"></div>
-
-  <div style="margin-top:24px">
-    <button class="btn" onclick="next()">Next</button>
-  </div>
+  <div id="feedback"></div>
+  <button class="btn" onclick="next()">Next</button>
 </section>
 
-<!-- FOLLOW / RESULT -->
 <section id="follow" class="screen follow">
-  <h2 id="finalTitle">Thanks for playing 🙌</h2>
-  <p id="finalMsg" style="color:#94a3b8;margin:16px 0"></p>
+  <h2 id="finalTitle"></h2>
+  <p id="finalMsg"></p>
 
-  <a href="https://x.com/epic_moonl702" target="_blank">
-    Follow me on X 🚀
-  </a>
-
-  <div style="margin-top:24px">
-    <button class="btn" onclick="restart()">Play Again</button>
+  <div class="highscore">
+    🏆 High Score: <span id="highScore">0</span> / 15
   </div>
-</section>
 
-<div class="footer">
-  Fan-made educational project • Not official
-</div>
+  <a href="https://x.com/epic_moonl702" target="_blank">Follow me on X 🚀</a>
+  <br><br>
+  <button class="btn" onclick="restart()">Play Again</button>
+</section>
 
 </div>
 
 <script>
 const DATA = [
-  {q:"What is Rialo?",o:["A social media platform","A real-world focused Layer-1 blockchain","A cloud storage service","An NFT marketplace only"],a:1},
-  {q:"What is the main goal of Rialo?",o:["Replace Web2","Connect real-world systems with blockchain","Only DeFi apps","Centralized database"],a:1},
-  {q:"Rialo is best described as:",o:["Private blockchain","Permissioned blockchain","Real-world Layer-1 blockchain","Sidechain"],a:2},
-  {q:"What makes Rialo different?",o:["Only crypto trading","Memes & NFTs","Native real-world logic integration","No smart contracts"],a:2},
-  {q:"Supermodular architecture means:",o:["Independent components","Greater power together","Slow but secure","Single module only"],a:1},
-  {q:"Why is Rialo beginner-friendly?",o:["No security","Web2-style onboarding","Mobile only","Advanced cryptography"],a:1},
-  {q:"How does Rialo help developers?",o:["Manual data","Third-party middleware","Native real-world integrations","Restricted connections"],a:2},
-  {q:"Who can use Rialo effectively?",o:["Experts only","Traders only","Developers & everyday users","Enterprises only"],a:2},
-  {q:"What apps can be built on Rialo?",o:["Only DeFi","Only gaming","Only NFTs","Real-world & Web3 apps"],a:3},
-  {q:"What UX does Rialo aim for?",o:["Complicated UX","Slow workflows","Web2-like UX with Web3 power","CLI only"],a:2},
-
-  {q:"Rialo mainly acts as a bridge between:",o:["NFTs & games","Web2 & Web3","Mobile & desktop","Tokens & memes"],a:1},
-  {q:"Why is Rialo suitable for real-world use?",o:["Avoids data","Test only","Designed for real-world systems","Offline"],a:2},
-  {q:"Best user journey for Rialo:",o:["Complex wallets","Instant onboarding","Manual approvals","Paper verification"],a:1},
-  {q:"Key benefit of modular design:",o:["Less flexibility","Higher cost","Faster innovation","Single-use"],a:2},
-  {q:"Why choose Rialo for real-world dApps?",o:["Centralized","Theoretical","Combines real-world logic","Limits access"],a:2}
+ {q:"What is Rialo?",o:["A social media platform","A real-world focused Layer-1 blockchain","A cloud storage service","An NFT marketplace only"],a:1},
+ {q:"What is the main goal of Rialo?",o:["Replace Web2","Connect real-world systems with blockchain","Only DeFi","Central DB"],a:1},
+ {q:"Rialo is best described as:",o:["Private","Permissioned","Real-world Layer-1 blockchain","Sidechain"],a:2},
+ {q:"What makes Rialo different?",o:["Crypto trading","Memes","Real-world data & logic","No contracts"],a:2},
+ {q:"Supermodular architecture means:",o:["Independent","Greater together","Slow","Single module"],a:1},
+ {q:"Why is Rialo beginner-friendly?",o:["No security","Web2-style onboarding","Mobile only","Advanced crypto"],a:1},
+ {q:"How does Rialo help devs?",o:["Manual","Middleware","Native real-world integrations","Restricted"],a:2},
+ {q:"Who can use Rialo?",o:["Experts","Traders","Everyone","Enterprises"],a:2},
+ {q:"What apps on Rialo?",o:["Only DeFi","Only games","Only NFTs","Real-world + Web3"],a:3},
+ {q:"What UX does Rialo aim?",o:["Complex","Slow","Web2-like","CLI"],a:2},
+ {q:"Rialo bridges:",o:["NFTs","Web2 & Web3","Mobile","Tokens"],a:1},
+ {q:"Why real-world ready?",o:["Avoids data","Test only","Real-world logic","Offline"],a:2},
+ {q:"Best user journey?",o:["Complex","Instant onboarding","Manual","Paper"],a:1},
+ {q:"Key modular benefit?",o:["Less flex","High cost","Fast innovation","Single-use"],a:2},
+ {q:"Why choose Rialo?",o:["Centralized","Theory","Real-world + blockchain","Limits"],a:2}
 ];
 
-let i=0;
-let score=0;
-let wrong=0;
+let i=0,score=0,wrong=0;
+let highScore = localStorage.getItem("rialoHighScore") || 0;
 
-const $=id=>document.getElementById(id);
+function $(id){return document.getElementById(id)}
 
 function startQuiz(){
-  $("start").classList.remove("active");
-  $("quiz").classList.add("active");
-  $("total").textContent=DATA.length;
-  load();
+ $("start").classList.remove("active");
+ $("quiz").classList.add("active");
+ $("total").textContent=DATA.length;
+ load();
 }
 
 function load(){
-  $("feedback").textContent="";
-  $("options").innerHTML="";
-  $("bar").style.width=(i/DATA.length)*100+"%";
-
-  const d=DATA[i];
-  $("qNo").textContent=i+1;
-  $("question").textContent=d.q;
-
-  d.o.forEach((text,idx)=>{
-    const div=document.createElement("div");
-    div.className="option";
-    div.textContent=text;
-    div.onclick=()=>select(idx);
-    $("options").appendChild(div);
-  });
+ $("options").innerHTML="";
+ $("feedback").textContent="";
+ $("bar").style.width=(i/DATA.length)*100+"%";
+ $("qNo").textContent=i+1;
+ $("question").textContent=DATA[i].q;
+ DATA[i].o.forEach((t,idx)=>{
+  const d=document.createElement("div");
+  d.className="option";
+  d.textContent=t;
+  d.onclick=()=>select(idx);
+  $("options").appendChild(d);
+ });
 }
 
 function select(idx){
-  const d=DATA[i];
-  document.querySelectorAll(".option").forEach((o,j)=>{
-    o.onclick=null;
-    if(j===d.a) o.classList.add("correct");
-    if(j===idx && idx!==d.a) o.classList.add("wrong");
-  });
-
-  if(idx===d.a){
-    score++;
-    $("feedback").textContent="Correct ✅";
-  }else{
-    wrong++;
-    $("feedback").textContent="Wrong ❌";
-    if(wrong>=3){
-      finish(false);
-      return;
-    }
-  }
+ const d=DATA[i];
+ document.querySelectorAll(".option").forEach((o,j)=>{
+  o.onclick=null;
+  if(j===d.a)o.classList.add("correct");
+  if(j===idx&&idx!==d.a)o.classList.add("wrong");
+ });
+ if(idx===d.a){score++} else {wrong++; if(wrong>=3){finish();}}
 }
 
 function next(){
-  i++;
-  if(i<DATA.length){
-    load();
-  }else{
-    finish(true);
-  }
+ i++;
+ if(i<DATA.length)load(); else finish();
 }
 
-function finish(completed){
-  $("quiz").classList.remove("active");
-  $("follow").classList.add("active");
+function finish(){
+ $("quiz").classList.remove("active");
+ $("follow").classList.add("active");
 
-  if(score===DATA.length){
-    $("finalTitle").textContent="Expert Level 🏆";
-    $("finalMsg").textContent="You answered everything correctly! You truly understand Rialo.";
-  }else if(wrong>=3){
-    $("finalTitle").textContent="Good Try 👍";
-    $("finalMsg").textContent="You reached the wrong-answer limit. Follow for more learning content.";
-  }else{
-    $("finalTitle").textContent="Quiz Completed 🎉";
-    $("finalMsg").textContent="Nice attempt! Follow on X to keep learning.";
-  }
+ if(score>highScore){
+  highScore=score;
+  localStorage.setItem("rialoHighScore",highScore);
+ }
+ $("highScore").textContent=highScore;
+
+ if(score===DATA.length){
+  $("finalTitle").textContent="Expert Level 🏆";
+  $("finalMsg").textContent="All answers correct. You truly understand Rialo.";
+ }else if(wrong>=3){
+  $("finalTitle").textContent="Good Try 👍";
+  $("finalMsg").textContent="3 wrong answers reached. Keep learning.";
+ }else{
+  $("finalTitle").textContent="Quiz Finished 🎉";
+  $("finalMsg").textContent="Nice attempt. Try to beat your high score!";
+ }
 }
 
 function restart(){
-  i=0;score=0;wrong=0;
-  $("follow").classList.remove("active");
-  $("start").classList.add("active");
+ i=0;score=0;wrong=0;
+ $("follow").classList.remove("active");
+ $("start").classList.add("active");
 }
 </script>
 
 </body>
 </html>
+
